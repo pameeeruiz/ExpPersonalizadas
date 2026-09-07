@@ -13,88 +13,84 @@ namespace ExpPersonalizadas
 {
     public partial class Form1 : Form
     {
-        static Alumnos alumnoRegistrado = null;
+        private static Alumnos alumnoRegistrado = null;
+        private System.ComponentModel.BindingList<Alumnos> alumnosBinding = new System.ComponentModel.BindingList<Alumnos>();
+        public static Alumnos AlumnoRegistrado => alumnoRegistrado;
         public Form1()
         {
             InitializeComponent();
+            // Vincular la lista al ListBox para mostrar registros automáticamente
+            listBox1.DisplayMember = "Nombre";
+            listBox1.DataSource = alumnosBinding;
         }
 
         private void btnRegistrar_Click(object sender, EventArgs e)
         {
             try
             {
-                Console.WriteLine("Ingrese la matrícula del alumno: ");
-                string matricula = Console.ReadLine();
-
-                Console.WriteLine("Ingrese el nombre del alumno: ");
-                string nombre = Console.ReadLine();
-
-                Console.WriteLine("Ingrese la edad del alumno: ");
-                int edad = int.Parse(Console.ReadLine());
-
-                Console.WriteLine("Ingrese el promedio del alumno: ");
-                double promedio = double.Parse(Console.ReadLine());
+                string matricula = txbMatricula.Text.Trim();
+                string nombre = txbNombre.Text.Trim();
+                int edad = int.Parse(txbEdad.Text.Trim());
+                double promedio = double.Parse(txbPromedio.Text.Trim());
 
                 Alumnos nuevoAlumno = new Alumnos(matricula, nombre, edad, promedio);
                 nuevoAlumno.ValidarInfo();
                 alumnoRegistrado = nuevoAlumno;
-                Console.WriteLine("Alumno registrado correctamente.");
+                // Añadir a la lista vinculada para que se muestre en el DataGridView
+                alumnosBinding.Add(nuevoAlumno);
+                MessageBox.Show("Alumno registrado correctamente.", "Registro", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                // Limpiar campos de entrada
+                txbMatricula.Clear();
+                txbNombre.Clear();
+                txbEdad.Clear();
+                txbPromedio.Clear();
             }
             catch (MatriculaInvalidaException ex)
             {
-                Console.WriteLine($"Error de matrícula: {ex.Message}");
+                MessageBox.Show($"Error de matrícula: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
             catch (EdadInvalidaException ex)
             {
-                Console.WriteLine($"Error de edad: {ex.Message}");
+                MessageBox.Show($"Error de edad: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
             catch (PromedioInsuficienteException ex)
             {
-                Console.WriteLine($"Error de promedio: {ex.Message}");
+                MessageBox.Show($"Error de promedio: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
             catch (FormatException)
             {
-                Console.WriteLine("Error: Formato de entrada inválido. Asegúrese de ingresar números válidos para la edad y el promedio.");
+                MessageBox.Show("Error: Formato de entrada inválido. Asegúrese de ingresar números válidos para la edad y el promedio.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error inesperado: {ex.Message}");
-            }
-            finally
-            {
-                Console.WriteLine("Proceso de registro finalizado.");
+                MessageBox.Show($"Error inesperado: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
         private void btnMostrarInfo_Click(object sender, EventArgs e)
         {
-            try
+            if (alumnoRegistrado == null)
             {
+                MessageBox.Show("No hay alumnos registrados.", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+            // Seleccionar y desplazar al alumno registrado en el ListBox
+            int idx = alumnosBinding.IndexOf(alumnoRegistrado);
+            if (idx >= 0 && idx < listBox1.Items.Count)
+            {
+                listBox1.ClearSelected();
+                listBox1.SelectedIndex = idx;
+                try { listBox1.TopIndex = idx; } catch { }
+            }
 
-                if (alumnoRegistrado == null)
-                {
-                    Console.WriteLine("No hay alumnos registrados.");
-                }
-                else
-                {
-                    alumnoRegistrado.MostrarInfo();
-                }
-            }
-            catch (Exception ex)
-            {
-
-                Console.WriteLine("Eror para mostrar alumno:", ex.Message);
-            }
-            finally
-            {
-                Console.WriteLine("Proceso de mostrar alumno finalizado.");
-            }
+            // También mostrar la información en un cuadro si se desea
+            string info = $"Matrícula: {alumnoRegistrado.Matricula}\nNombre: {alumnoRegistrado.Nombre}\nEdad: {alumnoRegistrado.Edad}\nPromedio: {alumnoRegistrado.Promedio}";
+            MessageBox.Show(info, "Información del alumno", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void btnSalir_Click(object sender, EventArgs e)
         {
-            Console.WriteLine("Saliendo del sistema...");
-            Environment.Exit(0);
+            Close();
         }
     }
 }

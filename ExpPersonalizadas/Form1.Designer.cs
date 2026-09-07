@@ -40,6 +40,7 @@
             this.btnRegistrar = new System.Windows.Forms.Button();
             this.btnMostrarInfo = new System.Windows.Forms.Button();
             this.btnSalir = new System.Windows.Forms.Button();
+            this.listBox1 = new System.Windows.Forms.ListBox();
             this.SuspendLayout();
             // 
             // label1
@@ -145,11 +146,21 @@
             this.btnSalir.UseVisualStyleBackColor = true;
             this.btnSalir.Click += new System.EventHandler(this.btnSalir_Click);
             // 
+            // listBox1
+            // 
+            this.listBox1.FormattingEnabled = true;
+            this.listBox1.ItemHeight = 16;
+            this.listBox1.Location = new System.Drawing.Point(438, 100);
+            this.listBox1.Name = "listBox1";
+            this.listBox1.Size = new System.Drawing.Size(273, 356);
+            this.listBox1.TabIndex = 12;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(749, 621);
+            this.Controls.Add(this.listBox1);
             this.Controls.Add(this.btnSalir);
             this.Controls.Add(this.btnMostrarInfo);
             this.Controls.Add(this.btnRegistrar);
@@ -183,6 +194,7 @@
         private System.Windows.Forms.Button btnRegistrar;
         private System.Windows.Forms.Button btnMostrarInfo;
         private System.Windows.Forms.Button btnSalir;
+        private System.Windows.Forms.ListBox listBox1;
     }
 }
 
